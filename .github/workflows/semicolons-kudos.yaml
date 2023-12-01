@@ -20,7 +20,7 @@ jobs:
           packages=$(ls -d packages/*/)
 
           # Convert packages to a matrix format
-          matrix=$(echo "${packages}" | awk '{printf "- directory: %s\n", $0}')
+          matrix=$(echo "${packages}" | awk -v q='"' '{printf "%s%s%s", q, $0, q}' | jq -R -s 'split("\n") | map(select(length > 0))')
           echo "::set-output name=matrix::${matrix}"
   kudos:
     needs: get-packages
