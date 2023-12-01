@@ -6,15 +6,34 @@ on:
   workflow_dispatch:
 
 jobs:
+  get-packages:
+    name: Get Monorepo Packages
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-dirs.outputs.matrix }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2 
+      - name: Set packages
+        id: set-dirs
+        run: |
+          packages=$(ls -d packages/*/)
+
+          # Convert packages to a matrix format
+          matrix=$(echo "${packages}" | awk '{printf "- directory: %s\n", $0}')
+          echo "::set-output name=matrix::${matrix}"
   kudos:
+    needs: get-packages
     name: Semicolons Kudos
     permissions: write-all
     runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.get-packages.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v2
       - uses: LoremLabs/kudos-for-code-action@latest
         with:
-          search-dir: "."
+          search-dir: packages/${{ matrix.directory }}
           destination: "artifact"
           generate-nomerges: true
           generate-validemails: true
