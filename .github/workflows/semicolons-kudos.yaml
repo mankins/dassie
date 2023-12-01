@@ -20,7 +20,7 @@ jobs:
           packages=$(ls -d packages/*/)
 
           # Convert packages to a matrix format
-          matrix=$(echo "${packages}" | awk -v q='"' '{printf "%s%s%s", q, $0, q}' | jq -R -s 'split("\n") | map(select(length > 0))')
+          matrix=$(echo "${packages}" | jq -R -s -c 'split("\n")[:-1]')
           echo "::set-output name=matrix::${matrix}"
   kudos:
     needs: get-packages
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: LoremLabs/kudos-for-code-action@latest
         with:
-          search-dir: packages/${{ matrix.directory }}
+          search-dir: ${{ matrix.directory }}
           destination: "artifact"
           generate-nomerges: true
           generate-validemails: true
