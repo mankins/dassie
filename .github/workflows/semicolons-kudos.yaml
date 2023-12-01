@@ -20,7 +20,7 @@ jobs:
           packages=$(ls -d packages/*/)
 
           # Convert packages to a matrix format
-          matrix=$(echo "${packages}" | jq -R -s -c 'split("\n")[:-1] | map({directory: .})')
+          matrix=$(echo "${packages}" | jq -R -s -c 'split("\n")[:-1]')
           echo "::set-output name=matrix::${matrix}"
   kudos:
     needs: get-packages
@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-        directory: ${{fromJson(needs.get-packages.outputs.matrix).directory}}
+        directory: ${{fromJson(needs.get-packages.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v2
       - uses: LoremLabs/kudos-for-code-action@latest
