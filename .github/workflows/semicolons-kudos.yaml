@@ -20,8 +20,8 @@ jobs:
           packages=$(ls -d packages/*/)
 
           # Convert packages to a matrix format
-          matrix=$(echo "${packages}" | jq -R -s -c 'split("\n")[:-1]')
-          echo "::set-output name=matrix::$(echo "${matrix}" | jq -R -s @json)"
+          matrix=$(echo "${packages}" | jq -R -s -c 'split("\n")[:-1] | map({directory: .})')
+          echo "::set-output name=matrix::${matrix}"
   kudos:
     needs: get-packages
     name: Semicolons Kudos
