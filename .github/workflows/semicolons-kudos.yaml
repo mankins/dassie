@@ -28,7 +28,8 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{fromJson(needs.get-packages.outputs.matrix)}}
+      matrix: 
+        directory: ${{fromJson(needs.get-packages.outputs.matrix).directory}}
     steps:
       - uses: actions/checkout@v2
       - uses: LoremLabs/kudos-for-code-action@latest
