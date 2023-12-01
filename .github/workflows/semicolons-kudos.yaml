@@ -28,6 +28,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 1
       matrix: 
         directory: ${{fromJson(needs.get-packages.outputs.matrix)}}
     steps:
