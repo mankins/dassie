@@ -21,7 +21,7 @@ jobs:
 
           # Convert packages to a matrix format
           matrix=$(echo "${packages}" | jq -R -s -c 'split("\n")[:-1]')
-          echo "::set-output name=matrix::${matrix}"
+          echo "::set-output name=matrix::$(echo "${matrix}" | jq -R -s @json)"
   kudos:
     needs: get-packages
     name: Semicolons Kudos
