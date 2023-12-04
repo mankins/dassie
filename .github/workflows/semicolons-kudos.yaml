@@ -17,7 +17,8 @@ jobs:
       - name: Set packages
         id: set-dirs
         run: |
-          packages=$(ls -d packages/*/)
+          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          packages=$(echo "${changed_files}" | grep '^packages/' | cut -d'/' -f2-3 | sort -u)
 
           # Convert packages to a matrix format
           matrix=$(echo "${packages}" | jq -R -s -c 'split("\n")[:-1]')
@@ -28,7 +29,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 1
+      max-parallel: 2
       matrix: 
         directory: ${{fromJson(needs.get-packages.outputs.matrix)}}
     steps:
@@ -39,7 +40,7 @@ jobs:
           destination: "artifact"
           generate-nomerges: true
           generate-validemails: true
-          generate-limitdepth: 2
+          generate-limitdepth: 1
           generate-fromrepo: true
           analyze-repo: true
           skip-ids: ""
