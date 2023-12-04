@@ -2,7 +2,7 @@
 name: Kudos for Code
 on:
   push:
-    branches: ["main"]
+    branches: ["kudos"]
   workflow_dispatch:
 
 jobs:
@@ -17,6 +17,8 @@ jobs:
       - name: Set packages
         id: set-dirs
         run: |
+          echo "Before: ${{ github.event.before }}"
+          echo "SHA: ${{ github.sha }}"
           changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
           packages=$(echo "${changed_files}" | grep '^packages/' | cut -d'/' -f2-3 | sort -u)
 
